@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://b2rgjqhxk5fh"]
+
+[ext_resource type="Texture2D" uid="uid://curna00gfvsu6" path="res://assets/game_over.png" id="1_xeevv"]
+[ext_resource type="Script" uid="uid://bs6w5dyx508rv" path="res://scenes/main_menu_label.gd" id="2_wqhvx"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(115, 65)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_xeevv")
+
+[node name="Label" type="Label" parent="Sprite2D"]
+offset_left = -135.0
+offset_top = 214.99997
+offset_right = 534.0
+offset_bottom = 278.99997
+theme_override_font_sizes/font_size = 46
+text = "~ press start to restart game ~"
+script = ExtResource("2_wqhvx")
+
+[node name="Timer" type="Timer" parent="Sprite2D/Label"]

@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="uid://b4kbhhwa61lee"]
+
+[ext_resource type="Texture2D" uid="uid://d3yqmxrpmpol5" path="res://assets/title_screen.png" id="1_yqorp"]
+[ext_resource type="Script" uid="uid://bs6w5dyx508rv" path="res://scenes/main_menu_label.gd" id="2_0ykhv"]
+[ext_resource type="Script" uid="uid://bgl1mheityir8" path="res://scenes/hi_score.gd" id="3_2wh52"]
+
+[node name="MainMenu" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(118.88891, 67.00001)
+scale = Vector2(0.20679013, 0.20679013)
+texture = ExtResource("1_yqorp")
+
+[node name="Label" type="Label" parent="."]
+offset_left = 32.0
+offset_top = 97.0
+offset_right = 198.0
+offset_bottom = 120.0
+text = "~ press start to play ~"
+script = ExtResource("2_0ykhv")
+
+[node name="Timer" type="Timer" parent="Label"]
+
+[node name="hi-score" type="Label" parent="."]
+offset_left = 2.0
+offset_top = -1.0
+offset_right = 42.0
+offset_bottom = 15.0
+theme_override_font_sizes/font_size = 11
+script = ExtResource("3_2wh52")

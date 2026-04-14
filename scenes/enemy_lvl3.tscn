@@ -1,0 +1,118 @@
+[gd_scene load_steps=15 format=3 uid="uid://d1qqukiwgv4p0"]
+
+[ext_resource type="Script" uid="uid://bnn8pm8e5qg2o" path="res://scenes/enemy_lvl_3.gd" id="1_t1a81"]
+[ext_resource type="Texture2D" uid="uid://b4ubdgnisreyh" path="res://assets/ghoul_lvl3.png" id="2_t1a81"]
+[ext_resource type="Texture2D" uid="uid://bgblogeechxd1" path="res://assets/art_atlas.png" id="3_hsden"]
+[ext_resource type="AudioStream" uid="uid://bj75ykbrm2ht2" path="res://assets/hit.mp3" id="4_y1xsr"]
+[ext_resource type="AudioStream" uid="uid://cn4s6744qk2d5" path="res://assets/enemy_death.mp3" id="5_hsden"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nenq2"]
+size = Vector2(6, 10)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y1xsr"]
+atlas = ExtResource("2_t1a81")
+region = Rect2(30, 0, 15, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hsden"]
+atlas = ExtResource("2_t1a81")
+region = Rect2(0, 0, 15, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y80jr"]
+atlas = ExtResource("2_t1a81")
+region = Rect2(15, 0, 15, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x6b1k"]
+atlas = ExtResource("2_t1a81")
+region = Rect2(0, 20, 15, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ifpb0"]
+atlas = ExtResource("2_t1a81")
+region = Rect2(15, 20, 15, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1pstt"]
+atlas = ExtResource("2_t1a81")
+region = Rect2(30, 20, 15, 20)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_hqtel"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y1xsr")
+}],
+"loop": true,
+"name": &"ghoul_hitstun",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hsden")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y80jr")
+}],
+"loop": false,
+"name": &"ghoul_move",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x6b1k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ifpb0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1pstt")
+}],
+"loop": false,
+"name": &"ghoul_shoot",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sweqy"]
+size = Vector2(6, 10.25)
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 5
+script = ExtResource("1_t1a81")
+
+[node name="CollisionBox" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_nenq2")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0.9999999, 0)
+scale = Vector2(0.508, 0.508)
+sprite_frames = SubResource("SpriteFrames_hqtel")
+animation = &"ghoul_shoot"
+
+[node name="Shadow" type="Sprite2D" parent="."]
+z_index = -1
+texture_filter = 1
+position = Vector2(0, 1.097)
+scale = Vector2(0.75000006, 0.62500006)
+texture = ExtResource("3_hsden")
+offset = Vector2(0, 4.5)
+region_enabled = true
+region_rect = Rect2(112, 16, 8, 8)
+
+[node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(0, 0.125)
+shape = SubResource("RectangleShape2D_sweqy")
+
+[node name="projectile_spawner" type="Marker2D" parent="."]
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_y1xsr")
+volume_db = 3.0
+
+[node name="AudioDeath" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_hsden")
+volume_db = 21.947
+
+[connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]
