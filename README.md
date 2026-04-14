@@ -1,6 +1,6 @@
 CONTROLS
 
-Please note, this game is intended to be played on gamepad (it can still be played on keyboard if needed though.)
+!!!Please note, this game is intended to be played on gamepad (it can still be played on keyboard if needed though.)!!!
 
 Playstation Buttons are used below
 
