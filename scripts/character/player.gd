@@ -10,7 +10,7 @@ extends CharacterBody2D
 signal player_hit(damage, knockback_direction)
 signal player_died
 
-var health: int = 20
+var health: int = 100
 var max_health: int = 100
 var invincible: bool = false
 var invincible_duration: float = 1.0

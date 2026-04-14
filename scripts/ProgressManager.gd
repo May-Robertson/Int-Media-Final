@@ -16,7 +16,7 @@ func save(content):
 	print("CONTENT"+str(content))
 	if int(content) > int(curr_high_score):
 		var file = FileAccess.open("res://hi-score.txt", FileAccess.WRITE)
-		file.store_string(content)
+		file.store_string(str(content))
 
 func load():
 	var file = FileAccess.open("res://hi-score.txt", FileAccess.READ)
