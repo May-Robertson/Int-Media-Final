@@ -10,8 +10,8 @@ extends CharacterBody2D
 signal player_hit(damage, knockback_direction)
 signal player_died
 
-var health: int = 100
-var max_health: int = 100
+var health: int = 150
+var max_health: int = 150
 var invincible: bool = false
 var invincible_duration: float = 1.0
 var knockback_force: float = 50
@@ -79,7 +79,6 @@ var current_anim_name: String = ""
 func _ready():
 	original_holder_pos = anim_holder.position
 	anim_player.animation_finished.connect(_on_animation_player_animation_finished)
-	player_anim.animation_finished.connect(_on_animated_sprite_finished)
 	add_to_group("player")
 	WeaponHitbox.area_entered.connect(_on_weapon_hitbox_entered)
 	$"animation_holder/WeaponHitbox/smear-box".disabled = true
@@ -270,6 +269,54 @@ func continue_combo():
 		reset_combo()
 
 
+func start_attack(anim_name: String):
+	is_attacking = true
+	current_anim_name = anim_name
+	
+	var slide_dir = 1 if anim_holder.scale.x > 0 else -1
+	velocity.x = slide_dir * 150
+	
+	current_state = State.ATTACKING
+	roll_cancel_available = false
+	
+	# enable hitbox
+	$animation_holder/WeaponHitbox/CollisionShape2D.disabled = false
+	
+	play_animation(anim_name)
+	
+	
+func play_animation(anim_name: String):
+	if anim_player.has_animation(anim_name):
+		anim_player.play(anim_name)
+	else:
+		player_anim.play(anim_name)
+
+# reset combo state
+func reset_combo():
+	is_comboing = false
+	waiting_for_combo_input = false
+	combo_stage = 0
+	roll_cancel_available = false
+	current_anim_name = ""
+	
+	if combo_timer:
+		combo_timer.timeout.disconnect(_on_combo_timeout)
+		combo_timer = null
+
+
+
+func start_combo_timer():
+	if combo_timer:
+		combo_timer.timeout.disconnect(_on_combo_timeout)
+	
+	combo_timer = get_tree().create_timer(0.5)
+	combo_timer.timeout.connect(_on_combo_timeout)
+
+func _on_combo_timeout():
+	if waiting_for_combo_input and is_comboing:
+		reset_combo()
+
+
 # roll function
 func attempt_roll():
 	if not can_roll:
@@ -363,7 +410,7 @@ func _on_weapon_hitbox_entered(area: Area2D):
 			enemy.take_damage(damage, knockback_direction, combo_stage, is_comboing, knockback_value, hit_type)
 			
 
-# func for enemy taking damage	
+# func for player taking damage	
 func take_damage(damage: int, knockback_direction: Vector2):
 	if invincible:
 		return
@@ -377,6 +424,7 @@ func take_damage(damage: int, knockback_direction: Vector2):
 	is_attacking = false
 	is_charging_heavy = false
 	is_helm_breaker = false
+	# since we only want to be able to roll cancel on a hit, not if the attack misses
 	roll_cancel_available = false
 	
 	is_in_knockback = true
@@ -397,43 +445,7 @@ func start_heavy_attack():
 	roll_cancel_available = false
 	play_animation("Heavy")
 
-# reset combo state
-func reset_combo():
-	is_comboing = false
-	waiting_for_combo_input = false
-	combo_stage = 0
-	roll_cancel_available = false
-	current_anim_name = ""
-	
-	if combo_timer:
-		combo_timer.timeout.disconnect(_on_combo_timeout)
-		combo_timer = null
 
-func start_attack(anim_name: String):
-	is_attacking = true
-	current_anim_name = anim_name
-	
-	var slide_dir = 1 if anim_holder.scale.x > 0 else -1
-	velocity.x = slide_dir * 150
-	
-	current_state = State.ATTACKING
-	roll_cancel_available = false
-	
-	# enable hitbox
-	$animation_holder/WeaponHitbox/CollisionShape2D.disabled = false
-	
-	play_animation(anim_name)
-
-func start_combo_timer():
-	if combo_timer:
-		combo_timer.timeout.disconnect(_on_combo_timeout)
-	
-	combo_timer = get_tree().create_timer(0.5)
-	combo_timer.timeout.connect(_on_combo_timeout)
-
-func _on_combo_timeout():
-	if waiting_for_combo_input and is_comboing:
-		reset_combo()
 
 func apply_z_physics(delta: float, gravity_scale: float = 1.0):
 	z_velocity += GRAVITY * gravity_scale * delta
@@ -452,27 +464,15 @@ func update_visuals(delta: float):
 	var shadow_scale = clamp(1.0 - (z_height * 0.005), 0.4, 1.0)
 	shadow.scale = Vector2.ONE * shadow_scale
 
-func play_animation(anim_name: String):
-	if anim_player.has_animation(anim_name):
-		anim_player.play(anim_name)
-	else:
-		player_anim.play(anim_name)
+
 
 func _on_animation_player_animation_finished(anim_name: StringName) -> void:
-	_handle_animation_finished(str(anim_name))
-
-func _on_animated_sprite_finished():
-	_handle_animation_finished(player_anim.animation)
-
-func _handle_animation_finished(anim_name: String):
-	print("ANIMATION FINISHED: ", anim_name)
-	
+	anim_name = str(anim_name)
 	if anim_name == "death":
 		player_died.emit()
 		queue_free()
 		get_tree().change_scene_to_file("res://scenes/game_over.tscn")
 	if anim_name != current_anim_name and is_attacking and not is_helm_breaker:
-		print("  (Ignoring stale animation: ", anim_name, " vs current: ", current_anim_name, ")")
 		return
 	if anim_name == "roll":
 		return
@@ -509,6 +509,8 @@ func _handle_animation_finished(anim_name: String):
 			current_state = State.JUMPING
 		else:
 			current_state = State.IDLE
+
+	
 
 func die():
 	AudioPlayer.play()

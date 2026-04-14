@@ -359,8 +359,7 @@ func _on_hitbox_entered(area: Area2D):
 	if area.get_parent().is_in_group("player"):
 		var player = area.get_parent()
 		var knockback_direction = (player.global_position - global_position).normalized()
-		if player.has_method("take_damage"):
-			player.take_damage(damage, knockback_direction)
+
 
 func take_damage(damage_amount: int, knockback_direction: Vector2, combo_stage: int, is_comboing, custom_knockback: float = 0, hit_type: String = "normal"):
 	if invincible:
@@ -401,14 +400,11 @@ func take_damage(damage_amount: int, knockback_direction: Vector2, combo_stage: 
 		if health <= 0:
 			die()
 		return
-	
-	
 	in_hitstun = true
 	hitstun_timer = hitstun_duration
 	modulate = Color.RED
 	anim.play("ghoul_hitstun")
 	
-	# how much does the enemy get knocked back
 	if combo_stage == 1:
 		final_knockback = 20
 	else:

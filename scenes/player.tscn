@@ -1515,7 +1515,6 @@ shape = SubResource("RectangleShape2D_qlg0r")
 disabled = true
 
 [node name="CollisionBox" type="CollisionShape2D" parent="."]
-visible = false
 position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_fjrip")
 
@@ -1525,6 +1524,7 @@ stream = ExtResource("4_dqkch")
 [node name="AudioDamage" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("5_qlg0r")
 volume_db = 17.201
+pitch_scale = 1.47
 
 [connection signal="animation_finished" from="animation_holder/AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
 [connection signal="animation_started" from="animation_holder/AnimationPlayer" to="." method="_on_animation_player_animation_started"]

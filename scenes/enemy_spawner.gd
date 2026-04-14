@@ -23,15 +23,15 @@ func _process(delta: float):
 func spawn_enemy():
 	
 	# spawn different enemy depending on how many enemies have been killed
-	if ProgressManager.enemies_killed < 15:
+	if ProgressManager.enemies_killed < 10:
 		var enemy = enemy_scene.instantiate()
 		enemy.global_position = Vector2(randf_range(0, 225), randf_range(0, 125))
 		add_child(enemy)
-	elif ProgressManager.enemies_killed > 15 and ProgressManager.enemies_killed < 25:
+	elif ProgressManager.enemies_killed > 10 and ProgressManager.enemies_killed < 20:
 		var enemylvl2 = enemy_lvl2_scene.instantiate()
 		enemylvl2.global_position = Vector2(randf_range(0, 225), randf_range(0, 125))
 		add_child(enemylvl2)
-	if ProgressManager.enemies_killed > 25:
+	if ProgressManager.enemies_killed > 20:
 		var enemylvl3 = enemy_lvl3_scene.instantiate()
 		enemylvl3.global_position = Vector2(randf_range(0, 225), randf_range(0, 125))
 		add_child(enemylvl3)
